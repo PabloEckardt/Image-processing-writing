@@ -4,20 +4,10 @@
 #include <array>
 #include <sys/resource.h>
 
-//to do make a header and functions file and update the makefile
-// upgrade make spiral to make it round numbers properly and make it user friendlu
-// upgrade grid by delimiting possible inputs. It should only take the margin and width of individual squares
-// in milimiters or inches
-// implement scan function.That finds a black square, measures its diameter. creates a new array with only
-// information of the new picture the size of the black square where the new object is in the center and there
-// are no borders for the object.
-// for the future, implement a rotate function that rotates an image.
-// for the future implement a generate image based off variations of a single image an a user input (or simulated user input)
-
 
 using namespace std;
 
-// This is a reminder of the resolution of a piece of paper at 300pixels per inch
+// This is the resolution of a piece of paper at 300pixels per inch. Actual size is this values / print resolution.
 // All functions will adjust to these parameters
 int const width = 2500;
 int const height = 3300;
