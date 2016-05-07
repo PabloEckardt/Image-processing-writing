@@ -21,29 +21,39 @@ using namespace std;
 // All functions will adjust to these parameters
 int const width = 2500;
 int const height = 3300;
+void drawGrid(int marginPixels, int sqHeight, int sqWidth, FILE ** file_pointer);
+void drawSpiral(FILE ** file_pointer, int rotations);
 //Draw spire function.
-void drawSpiral( array<array< int, width>, height> & arrayFlag,int mod1, int mod2){
-  float pi = 3.14159265359;
-  double r = 0;
-  int y,x;
-  float multiplier = 2; // number of complete rotations
 
-  for (double degree = 0; degree < 32000; degree = degree + .15){
-      r=r+.01;
-     double radian = (degree / 180.0) * pi;
-     //there needs to be smarter rounding in this case to fix the jittery stuff
-     x = (r * (cos(radian))) + height/2 +mod1;
-     y = r * (sin(radian)) + width/2 +mod2;
-    //if arrays function wrap correctly from center then add the point to the array.
-    if ((x>0 && y > 0 ) && (x < height && y < width)){
-      // printf("angle is %d x is %d y is %d \n",radian, x, y);
-    arrayFlag[x][y] = 1;
-    // printf( " is   %d \n",arrayFlag[x][y]);
-    }
-  }
+
+
+
+int main(void)
+{
+
+  //#################Initiate all necessary variables to create a ppm file from scratch.############
+  //dimx and dimy are pixels. To find the actual size of the image in scalars. Then
+  // its dimx pixels / print resolution. Ex: 2500/500pixelsperinch = 5 inches. Most laser printers
+  // print at 300 Pixels per inch.
+  FILE *fp = fopen("grid.ppm", "wb"); /* b - binary mode */
+  (void) fprintf(fp, "P6\n%d %d\n255\n", width, height); //this is part of the ppm format initialize.
+  // p6 is the magic number for the format. And 255 is the maximum understood value of the RGB pixels.
+  //the dimensions of the file are specified in the file header too.
+
+  //#################                   End of initializations              ############
+
+
+  // fourth argument is the pixels from the margins to the grid.
+  int square_height = 25;
+  int square_width = 25;
+  int marginSize = 100;
+  // drawGrid(marginSize,square_height,square_width,&fp);
+  printf("hello1\n");
+  drawSpiral( &fp,10);
+
+  (void) fclose(fp);
+  return EXIT_SUCCESS;
 }
-
-
 void drawGrid(int marginPixels, int sqHeight, int sqWidth, FILE ** file_pointer){
   int colsEnd = width - marginPixels;
   int rowsEnd = height - marginPixels;
@@ -81,34 +91,40 @@ void drawGrid(int marginPixels, int sqHeight, int sqWidth, FILE ** file_pointer)
   }
 }
 
-int main(void)
-{
+void drawSpiral(FILE ** file_pointer, int rotations){
+  float pi = 3.14159265359;
+  double r = 0;
+  int y,x;
+  static unsigned char color[3]; // a pixel with RGB
+  int i,j;
 
-  //#################Initiate all necessary variables to create a ppm file from scratch.############
-  //dimx and dimy are pixels. To find the actual size of the image in scalars. Then
-  // its dimx pixels / print resolution. Ex: 2500/500pixelsperinch = 5 inches. Most laser printers
-  // print at 300 Pixels per inch.
-  int i, j;
-  FILE *fp = fopen("grid.ppm", "wb"); /* b - binary mode */
-  (void) fprintf(fp, "P6\n%d %d\n255\n", width, height); //this is part of the ppm format initialize.
-  // p6 is the magic number for the format. And 255 is the maximum understood value of the RGB pixels.
-  //the dimensions of the file are specified in the file header too.
+  std::array<std::array<int,height >,width > arrayFlags;
+  printf("hello3\n");
 
-  //#################                   End of initializations              ############
+  for (double degree = 0; degree < 360 * rotations; degree = degree + .15){
+      r=r+.01;
+      double radian = (degree / 180.0) * pi;
+      x = (r * (cos(radian))) + height/2;
+      y = r * (sin(radian)) + width/2 ;
+      if ((  x>0 && y>0 ) && (x<height && y<width  ))
+        arrayFlags[x][y] = 1;
+  }
 
+  for (i = 0; i < height; i++) {
+    for (j = 0; j < width; j++){
+      if (arrayFlags[i][j] == 1) {
+        color[0] = 255;  /* red */
+        color[1] = 255;  /* green */
+        color[2] = 255;  /* blue */
+        (void) fwrite(color, 1, 3, *file_pointer);
+      }
+      else{
+        color[0] = 0;  /* red */
+        color[1] = 0;  /* green */
+        color[2] = 0;  /* blue */
+        (void) fwrite(color, 1, 3, *file_pointer);
+      }
+    }
+  }
 
-  // fourth argument is the pixels from the margins to the grid.
-  int square_height = 25;
-  int square_width = 25;
-  int marginSize = 100;
-  (drawGrid(marginSize,square_height,square_width,&fp));
-  //mod3 has to be a multiple of the pixel width and size of the squares.
-  // (drawSpiral( *arrayFlag,1,1));
-  // (drawSpiral( *arrayFlag,-1,1));
-  // (drawSpiral( *arrayFlag,-1,-1));
-  // (drawSpiral( *arrayFlag,1,-1));
-
-
-  (void) fclose(fp);
-  return EXIT_SUCCESS;
 }
