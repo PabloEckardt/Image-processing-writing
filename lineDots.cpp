@@ -15,9 +15,6 @@ void drawGrid(int marginPixels, int sqHeight, int sqWidth, FILE ** file_pointer)
 void drawSpiral(FILE ** file_pointer, int rotations);
 //Draw spire function.
 
-
-
-
 int main(void)
 {
 
