@@ -19,7 +19,11 @@ inside the main function you can select between two different images you can cre
 
 Example:
 
-![alt tag](Image-processing-writing/spiral.ppm)
+![alt tag](https://github.com/PabloEckardt/Image-processing-writing/blob/master/spiral.ppm)
+
+
+  
+
 
 ## A brief exaplanation of how PPM images work:
 
