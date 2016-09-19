@@ -18,8 +18,11 @@ ppm, pgm, and pbm are all are encoded in this standard:
 
 
 -[magic number indicating subclass of format] \n
+
 -[Bit color configuration ] \n
+
 -[#Tags with comments starting with #] \n
+
 -[image dimensions] \n
 
 - image in binary . . . .
